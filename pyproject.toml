@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "florae-demo-with-appium"
+version = "0.1.0"
+description = ""
+authors = ["Tanakrit-D <127579510+Tanakrit-D@users.noreply.github.com>"]
+readme = "README.md"
+package-mode = false
+
+[tool.poetry.dependencies]
+python = "^3.12"
+Appium-Python-Client = "^4.0.0"
+pytest = "<=8.2.0"
+allure-pytest = "^2.13.5"
+pylint-pytest = "^1.1.8"
+appium-swipe-actions = "^0.1.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
