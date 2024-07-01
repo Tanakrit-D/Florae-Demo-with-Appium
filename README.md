@@ -1,4 +1,4 @@
-# Florae-Demo-with-Appium
+# Florae Demo with Appium
  Android automation demo with Appium.
 
 ## To-do
@@ -12,11 +12,11 @@
 ### Prequisites
 [python](https://www.python.org/downloads/)  
 [pipx](https://pipx.pypa.io/stable/installation/)  
-[poetry](https://pipx.pypa.io/stable/installation/)
-[appium](https://appium.io/docs/en/2.0/quickstart/install/)
+[poetry](https://pipx.pypa.io/stable/installation/)  
+[appium](https://appium.io/docs/en/2.0/quickstart/install/)  
 [allure](https://allurereport.org/docs/install/)
 
-### Dependencies
+### Install dependencies
 ```bash
 cd <project_directory>
 poetry install
