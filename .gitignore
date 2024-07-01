@@ -3,9 +3,6 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-# C extensions
-*.so
-
 # Distribution / packaging
 .Python
 build/
@@ -154,3 +151,7 @@ cython_debug/
 
 # OS Files
 .DS_Store
+
+# Output Files
+!output/
+output/*

@@ -33,6 +33,7 @@ class TestDemo(TestCore):
                     'new UiSelector().descriptionContains("Day planted")',
                     SeekDirection.DOWN,
                 )
+            self.platform.remove_output_folder()
         except TestFailure:
             allure.attach(
                 self.device.screenshot(),

@@ -28,6 +28,20 @@ class DeviceType(Enum):
 
 
 @dataclass
+class EnvConfig:
+    """
+    Configuration dataclass for Environment settings.
+
+    Attributes:
+        url (str): URL path.
+        debug (bool): Flag for configuring various debugging behaviours.
+    """
+
+    url: str
+    debug: bool
+
+
+@dataclass
 class AppiumConfig:
     """
     Configuration dataclass for Appium settings.
@@ -85,6 +99,7 @@ class AppConfig:
         android (AndroidConfig): Android-specific configuration.
     """
 
+    env: EnvConfig
     appium: AppiumConfig
     android: AndroidConfig
 
@@ -107,6 +122,11 @@ class ConfigLoader:
         """
         config = configparser.ConfigParser()
         config.read(config_path)
+
+        env_config = EnvConfig(
+            url=config.get("ENVIRONMENT", "url"),
+            debug=config.get("ENVIRONMENT", "debug"),
+        )
 
         appium_config = AppiumConfig(
             host=config.get("APPIUM", "appium_host"),
@@ -132,7 +152,7 @@ class ConfigLoader:
             id_virtual=config.get("ANDROID", "android_id_virtual"),
         )
 
-        return AppConfig(appium=appium_config, android=android_config)
+        return AppConfig(env=env_config, appium=appium_config, android=android_config)
 
 
 class DeviceOptionsFactory:
@@ -141,7 +161,7 @@ class DeviceOptionsFactory:
     """
 
     @staticmethod
-    def create_options(config: AppConfig, device_type: DeviceType) -> Dict[str, Any]:
+    def create_options(config: AppConfig) -> Dict[str, Any]:
         """
         Create device options for Appium based on the provided configuration and device type.
 
@@ -169,10 +189,10 @@ class DeviceOptionsFactory:
             "adbExecTimeout": config.appium.adb_exec_timeout,
         }
 
-        if device_type == DeviceType.PHYSICAL:
+        if config.android.connected_device == "PHYSICAL":
             options["udid"] = config.android.id_physical
             options["deviceName"] = config.android.id_physical
-        elif device_type == DeviceType.WIFI:
+        elif config.android.connected_device == "WIFI":
             options["deviceName"] = config.android.id_wifi
         else:
             options["avd"] = config.android.id_virtual
@@ -214,15 +234,13 @@ class TestCore:
         Initializes configuration, device options, and creates necessary objects for testing.
         """
         self.config = ConfigLoader.load_config(CONFIG_PATH)
-        self.options = DeviceOptionsFactory.create_options(
-            self.config, DeviceType.VIRTUAL
-        )
+        self.options = DeviceOptionsFactory.create_options(self.config)
         self.driver = webdriver.Remote(
             self.appium_url,
             options=UiAutomator2Options().load_capabilities(self.options),
         )
         self.action = Action(self.driver)
-        self.platform = Platform()
+        self.platform = Platform(self.config.env.debug)
         self.device = Device(
             self.driver, self.config.android.package, self.platform.output_dir
         )
