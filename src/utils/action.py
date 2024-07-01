@@ -8,14 +8,18 @@ from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.actions import interaction
 from selenium.webdriver.common.actions.action_builder import ActionBuilder
 from selenium.webdriver.common.actions.pointer_input import PointerInput
+from src.utils.helpers import Helpers
+
 
 @unique
 class Direction(Enum):
     """Enumeration for swipe directions."""
+
     DOWN = "down"
     UP = "up"
     RIGHT = "right"
     LEFT = "left"
+
 
 class Action:
     """Handles various actions on mobile elements."""
@@ -28,6 +32,7 @@ class Action:
             driver: The Appium driver instance.
         """
         self.driver = driver
+        self.helpers = Helpers()
         self.logger = logging.getLogger(self.__class__.__name__)
 
     def _calculate_element_points(self, element) -> Dict[str, Tuple[int, int]]:
@@ -55,7 +60,9 @@ class Action:
             "bottom_right": (x + width, y + height),
         }
 
-    def click(self, by: str = AppiumBy.ID, value: Union[str, Dict, None] = None) -> None:
+    def click(
+        self, by: str = AppiumBy.ID, value: Union[str, Dict, None] = None
+    ) -> None:
         """
         It clicks! It just clicks!
 
@@ -65,7 +72,9 @@ class Action:
         """
         self.driver.find_element(by, value).click()
 
-    def click_element_centre(self, by: str = AppiumBy.ID, value: Union[str, Dict, None] = None) -> None:
+    def click_element_centre(
+        self, by: str = AppiumBy.ID, value: Union[str, Dict, None] = None
+    ) -> None:
         """
         Click the mid-point of an element.
 
@@ -76,8 +85,12 @@ class Action:
         element = self.driver.find_element(by, value)
         element_points = self._calculate_element_points(element)
         action = ActionChains(self.driver)
-        action.w3c_actions = ActionBuilder(self.driver, mouse=PointerInput(interaction.POINTER_TOUCH, "touch"))
-        action.w3c_actions.pointer_action.move_to_location(element_points["mid"][0], element_points["mid"][1])
+        action.w3c_actions = ActionBuilder(
+            self.driver, mouse=PointerInput(interaction.POINTER_TOUCH, "touch")
+        )
+        action.w3c_actions.pointer_action.move_to_location(
+            element_points["mid"][0], element_points["mid"][1]
+        )
         action.w3c_actions.pointer_action.pointer_down()
         action.w3c_actions.pointer_action.pause(1)
         action.w3c_actions.pointer_action.release()
@@ -97,7 +110,45 @@ class Action:
         actions.perform()
         self.logger.info("Successfully sent keys: %s", value)
 
-    def get_element_text(self, by: str = AppiumBy.ID, value: Union[str, Dict, None] = None) -> str:
+    def send_keycode(self, keycode: int) -> None:
+        """
+        Send a keycode to the device.
+
+        Args:
+            keycode (int): The keycode to send.
+        """
+        self.driver.press_keycode(keycode)
+        self.logger.info("Keycode %s sent", keycode)
+
+    def send_keycodes(self, value: str) -> None:
+        codes = self.helpers.convert_string_to_nativekey(value)
+        for code in codes:
+            self.send_keycode(code)
+
+    def send_enter_key(self) -> None:
+        """
+        Send the enter key (keycode 66).
+        """
+        self.send_keycode(66)
+        self.logger.info("Keycode 66 (ENTER) sent")
+
+    def send_back_key(self) -> None:
+        """
+        Send the back key (keycode 4).
+        """
+        self.send_keycode(4)
+        self.logger.info("Keycode 4 (BACK) sent")
+
+    def dismiss_keyboard(self) -> None:
+        """
+        Dismiss the keyboard if it's visible.
+        """
+        self.driver.hide_keyboard()
+        self.logger.info("Keyboard dismissed")
+
+    def get_element_text(
+        self, by: str = AppiumBy.ID, value: Union[str, Dict, None] = None
+    ) -> str:
         """
         Get the text of an element.
 

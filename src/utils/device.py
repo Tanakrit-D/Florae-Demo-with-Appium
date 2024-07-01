@@ -1,7 +1,8 @@
 import time
 import logging
 from datetime import datetime
-import os
+from pathlib import Path
+
 
 class Device:
     """
@@ -32,11 +33,11 @@ class Device:
         """
         date = datetime.now()
         file_name = f"screenshot_{date.strftime('%Y-%m-%d_%H-%M-%S')}.png"
-        file_path = os.path.join(self.output_dir, file_name)
+        file_path = Path(self.output_dir) / file_name
         try:
             self.driver.save_screenshot(file_path)
             self.logger.info("Screenshot saved to: %s", file_path)
-            return file_path
+            return str(file_path)
         except Exception as e:
             error_message = "Failed to take screenshot: %s", str(e)
             self.logger.error(error_message)
@@ -93,68 +94,38 @@ class Device:
             if webview in context_name:
                 self.switch_context(context_name)
                 return
-        raise ValueError(f'Failed to switch to {webview}')
-
-    def send_keycode(self, keycode: int) -> None:
-        """
-        Send a keycode to the device.
-
-        Args:
-            keycode (int): The keycode to send.
-        """
-        self.driver.press_keycode(keycode)
-        self.logger.info("Keycode %s sent", keycode)
-
-    def send_enter_key(self) -> None:
-        """
-        Send the enter key (keycode 66).
-        """
-        self.send_keycode(66)
-        self.logger.info("Keycode 66 (ENTER) sent")
-
-    def send_back_key(self) -> None:
-        """
-        Send the back key (keycode 4).
-        """
-        self.send_keycode(4)
-        self.logger.info("Keycode 4 (BACK) sent")
-
-    def dismiss_keyboard(self) -> None:
-        """
-        Dismiss the keyboard if it's visible.
-        """
-        self.driver.hide_keyboard()
-        self.logger.info("Keyboard dismissed")
+        raise ValueError(f"Failed to switch to {webview}")
 
     def fix_permissions_issue(self) -> None:
         """
         Fix permissions issues by granting all permissions to the app.
         """
-        params = {
-            "permissions": "all",
-            "appPackage": self.activity,
-            "action": "grant"
-        }
+        params = {"permissions": "all", "appPackage": self.activity, "action": "grant"}
         self.driver.execute_script("mobile: changePermissions", params)
         self.logger.info("Permissions fixed for %s", self.activity)
 
 
 class AppRefreshFailure(Exception):
     """Custom exception raised when an app refresh operation fails."""
+
     def __init__(self, message: str, original_error: Exception = None):
         self.message = message
         self.original_error = original_error
         super().__init__(self.message)
+
 
 class ContextSwitchingFailure(Exception):
     """Custom exception raised when an context switching operation fails."""
+
     def __init__(self, message: str, original_error: Exception = None):
         self.message = message
         self.original_error = original_error
         super().__init__(self.message)
 
+
 class ScreenshotFailure(Exception):
     """Custom exception raised when a screenshot operation fails."""
+
     def __init__(self, message: str, original_error: Exception = None):
         self.message = message
         self.original_error = original_error

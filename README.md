@@ -1,9 +1,9 @@
 # Florae Demo with Appium
  Android automation demo with Appium.
 
+
 ## To-do
 - Write some actual tests (lol)
-- Implement POM
 - Write CLI script
 - Implement docker
 - Write screen recording methods
@@ -20,6 +20,11 @@
 ```bash
 cd <project_directory>
 poetry install
+poetry env use <python version>
+```
+
+### Set venv
+```bash
 poetry env use <python version>
 ```
 

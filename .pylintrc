@@ -8,4 +8,5 @@ max-line-length=120
 disable=C0114,R0903,W0201
 
 [DESIGN]
+min-public-methods=1
 max-attributes=15

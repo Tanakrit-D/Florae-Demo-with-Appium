@@ -1,6 +1,9 @@
+# pylint: disable=C0114
+
 import os
 import shutil
 from datetime import datetime
+
 
 class Platform:
     """
@@ -36,9 +39,9 @@ class Platform:
 
     def remove_output_folder(self) -> None:
         """
-        Remove the output folder if in debug mode.
+        Remove the output folder if not in debug mode.
 
-        This method only removes the folder if self.debug is True.
+        This method only removes the folder if self.debug from config.cfg is False.
         """
-        if self.debug:
+        if not self.debug:
             shutil.rmtree(self.output_dir)
