@@ -2,23 +2,12 @@
 
 import logging
 from typing import Dict, Union, Tuple
-from enum import Enum, unique
 from appium.webdriver.common.appiumby import AppiumBy
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.actions import interaction
 from selenium.webdriver.common.actions.action_builder import ActionBuilder
 from selenium.webdriver.common.actions.pointer_input import PointerInput
 from src.utils.helpers import Helpers
-
-
-@unique
-class Direction(Enum):
-    """Enumeration for swipe directions."""
-
-    DOWN = "down"
-    UP = "up"
-    RIGHT = "right"
-    LEFT = "left"
 
 
 class Action:
