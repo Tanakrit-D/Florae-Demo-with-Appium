@@ -45,13 +45,13 @@ selenium = ">=4.12,<5.0"
 
 [[package]]
 name = "appium-swipe-actions"
-version = "0.1.1"
+version = "0.1.2"
 description = "Enhanced Swipe Actions Library for Appium."
 optional = false
 python-versions = "<4.0,>=3.12"
 files = [
-    {file = "appium_swipe_actions-0.1.1-py3-none-any.whl", hash = "sha256:ae40b894e8d59b234ab5b4aa5a9f6e17241ebbd5787738e3342dc52fc5fcf305"},
-    {file = "appium_swipe_actions-0.1.1.tar.gz", hash = "sha256:c7c51b8e04b53391bb39727013a28ac9b8978f92fb3fb57c51a3a2f399d24dcf"},
+    {file = "appium_swipe_actions-0.1.2-py3-none-any.whl", hash = "sha256:ce3c7e2260b032594c369240ff4a58a6f17c69ea5729024578d94df5a2ce10a9"},
+    {file = "appium_swipe_actions-0.1.2.tar.gz", hash = "sha256:8529d434722fbd388da5d14b7abab433632bc03753f44aedba2d5e573e47eb7b"},
 ]
 
 [package.dependencies]
