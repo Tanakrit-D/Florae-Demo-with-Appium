@@ -13,7 +13,6 @@ I was not able to identify how to accomplish this using a fixture approach.
 ## Setup
 ### Prequisites
 [python](https://www.python.org/downloads/)  
-[pipx](https://pipx.pypa.io/stable/installation/)  
 [poetry](https://pipx.pypa.io/stable/installation/)  
 [appium](https://appium.io/docs/en/2.0/quickstart/install/)  
 [avd](https://developer.android.com/studio/run/emulator)  
@@ -23,7 +22,6 @@ I was not able to identify how to accomplish this using a fixture approach.
 ```bash
 cd <project_directory>
 poetry install
-poetry env use <python version>
 ```
 
 ### Set venv
