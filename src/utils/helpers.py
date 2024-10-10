@@ -31,7 +31,7 @@ class Helpers:
                     codes.append(value_to_nativekeycode[char])
                 else:
                     raise ValueError(
-                        f"Failed to map string ({value}) to NativeKey, there may be invalid characters."
+                        f"Failed to map string ({value}) to NativeKey, there may be invalid characters such as: ({char})."
                     )
         except ValueError as e:
             raise e
