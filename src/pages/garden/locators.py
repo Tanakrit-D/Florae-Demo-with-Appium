@@ -1,10 +1,8 @@
-# pylint: disable=C0301
-
 from appium.webdriver.common.appiumby import AppiumBy
 
 
 class GardenLocators:
-    """Garden Page Locators"""
+    """Garden Page Locators."""
 
     GARDEN_HEADING = (
         AppiumBy.ANDROID_UIAUTOMATOR,

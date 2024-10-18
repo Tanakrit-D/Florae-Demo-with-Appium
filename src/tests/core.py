@@ -1,26 +1,27 @@
-import os
+from __future__ import annotations
+
 import configparser
 from ast import literal_eval
 from dataclasses import dataclass
 from enum import Enum
-from typing import Dict, Any
+from pathlib import Path
+from typing import Any
+
 from appium import webdriver
 from appium.options.android import UiAutomator2Options
-from appium_swipe_actions.core import SwipeActions
+from appium.swipe.actions import SwipeActions
+
 from src.utils.action import Action
 from src.utils.device import Device
 from src.utils.platform import Platform
 from src.utils.wait import Wait
 
-
-CUR_DIR = os.path.dirname(__file__)
-CONFIG_PATH = os.path.join(CUR_DIR, "../../config.cfg")
+CUR_DIR = Path.cwd()
+CONFIG_PATH = Path(CUR_DIR / "config.cfg")
 
 
 class DeviceType(Enum):
-    """
-    Connected device types.
-    """
+    """Connected device types."""
 
     PHYSICAL = "PHYSICAL"
     WIFI = "WIFI"
@@ -34,7 +35,8 @@ class EnvConfig:
 
     Attributes:
         url (str): URL path.
-        debug (bool): Flag for configuring various debugging behaviours.
+        debug (bool): Flag for configuring various debugging behavior.
+
     """
 
     url: str
@@ -55,6 +57,7 @@ class AppiumConfig:
         new_command_timeout (int): Timeout for new commands.
         uiautomator2_server_install_timeout (int): Timeout for UIAutomator2 server installation.
         adb_exec_timeout (int): Timeout for ADB command execution.
+
     """
 
     host: str
@@ -79,6 +82,7 @@ class AndroidConfig:
         id_physical (str): Identifier for physical device.
         id_wifi (str): Identifier for WiFi-connected device.
         id_virtual (str): Identifier for virtual device.
+
     """
 
     connected_device: str
@@ -97,6 +101,7 @@ class AppConfig:
     Attributes:
         appium (AppiumConfig): Appium-specific configuration.
         android (AndroidConfig): Android-specific configuration.
+
     """
 
     env: EnvConfig
@@ -105,9 +110,7 @@ class AppConfig:
 
 
 class ConfigLoader:
-    """
-    Utility class for loading configuration from a file.
-    """
+    """Utility class for loading configuration from a file."""
 
     @staticmethod
     def load_config(config_path: str) -> AppConfig:
@@ -119,6 +122,7 @@ class ConfigLoader:
 
         Returns:
             AppConfig: Loaded application configuration.
+
         """
         config = configparser.ConfigParser()
         config.read(config_path)
@@ -134,11 +138,11 @@ class ConfigLoader:
             no_reset=literal_eval(config.get("APPIUM", "no_reset")),
             full_reset=literal_eval(config.get("APPIUM", "full_reset")),
             remote_apps_cache_limit=int(
-                config.get("APPIUM", "remote_apps_cache_limit")
+                config.get("APPIUM", "remote_apps_cache_limit"),
             ),
             new_command_timeout=int(config.get("APPIUM", "new_command_timeout")),
             uiautomator2_server_install_timeout=int(
-                config.get("APPIUM", "uiautomator2_server_install_timeout")
+                config.get("APPIUM", "uiautomator2_server_install_timeout"),
             ),
             adb_exec_timeout=int(config.get("APPIUM", "adb_exec_timeout")),
         )
@@ -156,12 +160,10 @@ class ConfigLoader:
 
 
 class DeviceOptionsFactory:
-    """
-    Factory class for creating device options based on configuration and device type.
-    """
+    """Factory class for creating device options based on configuration and device type."""
 
     @staticmethod
-    def create_options(config: AppConfig) -> Dict[str, Any]:
+    def create_options(config: AppConfig) -> dict[str, Any]:
         """
         Create device options for Appium based on the provided configuration and device type.
 
@@ -171,8 +173,9 @@ class DeviceOptionsFactory:
 
         Returns:
             Dict[str, Any]: Dictionary of device options for Appium.
+
         """
-        options: Dict[str, Any] = {
+        options: dict[str, Any] = {
             "platformName": "Android",
             "automationName": "UIAutomator2",
             "noReset": config.appium.no_reset,
@@ -197,16 +200,13 @@ class DeviceOptionsFactory:
         else:
             options["avd"] = config.android.id_virtual
             options["deviceName"] = config.android.id_virtual
-
-        options["app"] = os.path.join(os.getcwd(), config.android.apk)
+        options["app"] = str(Path(CUR_DIR / config.android.apk).resolve())
 
         return options
 
 
 class TestCore:
-    """
-    Core class for Appium-based testing, handling setup and teardown of test sessions.
-    """
+    """Core class for Appium-based testing, handling setup and teardown of test sessions."""
 
     @property
     def scheme(self) -> str:
@@ -215,6 +215,7 @@ class TestCore:
 
         Returns:
             str: URL scheme (http://).
+
         """
         return "http://"
 
@@ -225,12 +226,14 @@ class TestCore:
 
         Returns:
             str: Full Appium server URL.
+
         """
         return f"{self.scheme}{self.config.appium.host}:{self.config.appium.port}"
 
     def setup_method(self) -> None:
         """
         Set up the test environment before each test method.
+
         Initializes configuration, device options, and creates necessary objects for testing.
         """
         self.config = ConfigLoader.load_config(CONFIG_PATH)
@@ -242,7 +245,7 @@ class TestCore:
         self.action = Action(self.driver)
         self.platform = Platform(self.config.env.debug)
         self.device = Device(
-            self.driver, self.config.android.package, self.platform.output_dir
+            self.driver, self.config.android.package, self.platform.output_dir,
         )
         self.swipe = SwipeActions(self.driver)
         self.wait = Wait(self.driver)
@@ -250,6 +253,7 @@ class TestCore:
     def teardown_method(self) -> None:
         """
         Clean up the test environment after each test method.
+
         Quits the driver if it exists.
         """
         if not hasattr(self, "driver"):

@@ -1,6 +1,9 @@
 # pylint: disable=C0116
 
 import logging
+
+from selenium.webdriver.remote.webdriver import WebDriver
+
 from src.pages.home.locators import HomeLocators
 from src.utils.action import Action
 from src.utils.wait import Wait
@@ -8,12 +11,12 @@ from src.utils.wait import Wait
 
 class HomePage:
     """
-    Home Page Object Model
+    Home Page Object Model.
 
     Locator tuples must be unpacked with * when called.
     """
 
-    def __init__(self, driver):
+    def __init__(self, driver: WebDriver):
         self.driver = driver
         self.action = Action(self.driver)
         self.wait = Wait(self.driver)

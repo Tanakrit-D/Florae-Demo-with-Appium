@@ -1,7 +1,8 @@
-# pylint: disable=C0116
-
 import logging
+
 from appium.webdriver.common.appiumby import AppiumBy
+from selenium.webdriver.remote.webdriver import WebDriver
+
 from src.pages.garden.locators import GardenLocators
 from src.utils.action import Action
 from src.utils.wait import Wait
@@ -9,12 +10,12 @@ from src.utils.wait import Wait
 
 class GardenPage:
     """
-    Garden Page Object Model
+    Garden Page Object Model.
 
     Locator tuples must be unpacked with * when called.
     """
 
-    def __init__(self, driver):
+    def __init__(self, driver: WebDriver) -> None:
         self.driver = driver
         self.action = Action(self.driver)
         self.wait = Wait(self.driver)

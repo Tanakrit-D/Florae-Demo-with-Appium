@@ -2,7 +2,7 @@ from appium.webdriver.common.appiumby import AppiumBy
 
 
 class HomeLocators:
-    """Home Page Locators"""
+    """Home Page Locators."""
 
     TODAY_HEADING = (
         AppiumBy.ANDROID_UIAUTOMATOR,

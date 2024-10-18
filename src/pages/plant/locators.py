@@ -1,10 +1,8 @@
-# pylint: disable=C0301
-
 from appium.webdriver.common.appiumby import AppiumBy
 
 
 class PlantLocators:
-    """Plant Page Locators"""
+    """Plant Page Locators."""
 
     NEW_HEADING = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().description("New")')
     NAME_FIELD = (

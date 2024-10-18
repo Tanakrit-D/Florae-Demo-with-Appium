@@ -1,11 +1,13 @@
 # pylint: disable=C0114
+from __future__ import annotations
 
 import logging
-from typing import Dict, Union
-from selenium.common.exceptions import TimeoutException
-from selenium.webdriver.support.wait import WebDriverWait
-from selenium.webdriver.support import expected_conditions as Conditions
+
 from appium.webdriver.common.appiumby import AppiumBy
+from selenium.common.exceptions import TimeoutException
+from selenium.webdriver.remote.webdriver import WebDriver
+from selenium.webdriver.support import expected_conditions as conditions
+from selenium.webdriver.support.wait import WebDriverWait
 
 
 class Wait:
@@ -16,46 +18,48 @@ class Wait:
     present, or clickable.
     """
 
-    def __init__(self, driver, timeout: int = 30):
+    def __init__(self, driver: WebDriver, timeout: int = 30) -> None:
         """
         Initialize the Wait class.
 
         Args:
             driver: The Appium driver instance.
             timeout (int): The maximum time to wait for a condition, in seconds.
+
         """
         self.driver = driver
         self.timeout = timeout
         self.logger = logging.getLogger(__name__)
 
     def _wait_for_condition(
-        self, condition, by: str, value: Union[str, Dict, None], action: str
-    ):
+        self, condition, by: str, value: str | dict | None, action: str,
+    ) -> None:
         """
-        Generic method to wait for a specific condition.
+        Wait for a specific condition.
 
         Args:
             condition: The expected condition to wait for.
             by (str): The locator strategy.
-            value (Union[str, Dict, None]): The locator value.
+            value (str | dict | None): The locator value.
             action (str): Description of the action being waited for.
 
         Raises:
             TimeoutException: If the condition is not met within the timeout period.
+
         """
         try:
             WebDriverWait(self.driver, timeout=self.timeout).until(
-                condition((by, value))
+                condition((by, value)),
             )
             self.logger.info("Element %s successfully: %s=%s", action, by, value)
         except TimeoutException:
-            self.logger.error(
-                "Timeout waiting for element to be %s: %s=%s", action, by, value
+            self.logger.exception(
+                "Timeout waiting for element to be %s: %s=%s", action, by, value,
             )
             raise
 
     def for_element_to_be_visible(
-        self, by: str = AppiumBy.ID, value: Union[str, Dict, None] = None
+        self, by: str = AppiumBy.ID, value: str | dict | None = None,
     ) -> None:
         """
         Wait for an element to be visible.
@@ -66,13 +70,14 @@ class Wait:
 
         Raises:
             TimeoutException: If the element is not visible within the timeout period.
+
         """
         self._wait_for_condition(
-            Conditions.visibility_of_element_located, by, value, "visible"
+            conditions.visibility_of_element_located, by, value, "visible",
         )
 
     def for_element_to_be_invisible(
-        self, by: str = AppiumBy.ID, value: Union[str, Dict, None] = None
+        self, by: str = AppiumBy.ID, value: str | dict | None = None,
     ) -> None:
         """
         Wait for an element to be invisible.
@@ -83,13 +88,14 @@ class Wait:
 
         Raises:
             TimeoutException: If the element is still visible after the timeout period.
+
         """
         self._wait_for_condition(
-            Conditions.invisibility_of_element_located, by, value, "invisible"
+            conditions.invisibility_of_element_located, by, value, "invisible",
         )
 
     def for_element_to_be_present(
-        self, by: str = AppiumBy.ID, value: Union[str, Dict, None] = None
+        self, by: str = AppiumBy.ID, value: str | dict | None = None,
     ) -> None:
         """
         Wait for an element to be present in the DOM.
@@ -100,13 +106,14 @@ class Wait:
 
         Raises:
             TimeoutException: If the element is not present within the timeout period.
+
         """
         self._wait_for_condition(
-            Conditions.presence_of_element_located, by, value, "present"
+            conditions.presence_of_element_located, by, value, "present",
         )
 
     def for_element_to_be_clickable(
-        self, by: str = AppiumBy.ID, value: Union[str, Dict, None] = None
+        self, by: str = AppiumBy.ID, value: str | dict | None = None,
     ) -> None:
         """
         Wait for an element to be clickable.
@@ -117,7 +124,8 @@ class Wait:
 
         Raises:
             TimeoutException: If the element is not clickable within the timeout period.
+
         """
         self._wait_for_condition(
-            Conditions.element_to_be_clickable, by, value, "clickable"
+            conditions.element_to_be_clickable, by, value, "clickable",
         )

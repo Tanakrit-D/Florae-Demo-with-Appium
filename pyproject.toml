@@ -1,20 +1,30 @@
-[tool.poetry]
+[project]
 name = "florae-demo-with-appium"
 version = "0.1.0"
 description = ""
-authors = ["Tanakrit-D <127579510+Tanakrit-D@users.noreply.github.com>"]
+authors = [
+    { name = "Dominic", email = "127579510+Tanakrit-D@users.noreply.github.com" }
+]
+dependencies = [
+    "appium-python-client>=4.2.0",
+    "allure-pytest>=2.13.5",
+    "pylint-pytest>=1.1.8",
+    "appium-swipe-actions>=0.1.3",
+]
 readme = "README.md"
-package-mode = false
+requires-python = ">= 3.8"
 
-[tool.poetry.dependencies]
-python = "^3.12"
-Appium-Python-Client = "^4.0.0"
-pytest = "<=8.2.0"
-allure-pytest = "^2.13.5"
-pylint-pytest = "^1.1.8"
-appium-swipe-actions = "^0.1.1"
+[tool.rye]
+managed = true
+virtual = true
+dev-dependencies = [
+    "pytest<=8.2.0",
+    "ruff>=0.6.2",
+]
 
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = ["D100","D212","S101","TCH001","TCH002","TCH003"]
 
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+[tool.ruff]
+line-length = 140

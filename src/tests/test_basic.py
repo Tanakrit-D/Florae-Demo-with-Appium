@@ -1,12 +1,11 @@
-# pylint: disable=C0114,C0115,C0116,W0212
-
 import allure
 import pytest
-from core import TestCore
-from src.pages.home.page import HomePage
+
 from src.pages.garden.page import GardenPage
+from src.pages.home.page import HomePage
 from src.pages.plant.page import PlantPage
-from src.utils.exception import TestFailure
+from src.tests.core import TestCore
+from src.utils.exception import FailedTestError
 
 
 @allure.title("Add New Plant Test")
@@ -14,7 +13,7 @@ from src.utils.exception import TestFailure
 @allure.tag("Smoke Test")
 class TestsBasic(TestCore):
 
-    def test_add_new_plant(self):
+    def test_add_new_plant(self) -> None:
         try:
             with allure.step("Step 1. Open App"):
                 self.home = HomePage(self.driver)
@@ -41,10 +40,10 @@ class TestsBasic(TestCore):
                     attachment_type=allure.attachment_type.PNG,
                 )
             self.platform.remove_output_folder()
-        except TestFailure:
+        except FailedTestError as e:
             allure.attach(
                 self.driver.get_screenshot_as_png(),
                 name="Test Failure",
                 attachment_type=allure.attachment_type.PNG,
             )
-            pytest.fail()
+            pytest.fail(reason=e.message)

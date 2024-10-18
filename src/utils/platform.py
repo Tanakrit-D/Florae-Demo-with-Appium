@@ -1,8 +1,8 @@
 # pylint: disable=C0114
 
-import os
+import datetime
 import shutil
-from datetime import datetime
+from pathlib import Path
 
 
 class Platform:
@@ -13,12 +13,13 @@ class Platform:
     with optional debug functionality.
     """
 
-    def __init__(self, debug: bool = False):
+    def __init__(self, debug: bool) -> None:  # noqa: FBT001
         """
         Initialize the Platform instance.
 
         Args:
             debug (bool): If True, enables debug mode. Defaults to False.
+
         """
         self.debug = debug
         self.output_dir = self._create_output_folder()
@@ -29,12 +30,13 @@ class Platform:
 
         Returns:
             str: The path of the created output folder.
+
         """
         base_dir = "./output"
-        timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-        folder_path = os.path.join(base_dir, timestamp)
+        timestamp = datetime.datetime.now(tz=datetime.UTC).strftime("%Y-%m-%d_%H-%M-%S")
+        folder_path = Path(base_dir) / timestamp
+        Path(folder_path).mkdir(parents=True)
 
-        os.makedirs(folder_path, exist_ok=True)
         return folder_path
 
     def remove_output_folder(self) -> None:
